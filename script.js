@@ -1,139 +1,108 @@
-var total = 0;
-var parte1 = 0;
-var guarda_sinal = '';
-
-function valor_0() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '0';
-}
-function valor_1() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '1';
-}
-
-function valor_2() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '2';
-}
-
-function valor_3() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '3';
-}
-
-function valor_4() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '4';
+onload = () => {
+document.querySelector('#botao0').onclick = () => digito(0);
+ document.querySelector('#botao1').onclick = () => digito(1);
+ document.querySelector('#botao2').onclick = () => digito(2);
+ document.querySelector('#botao3').onclick = () => digito(3);
+ document.querySelector('#botao4').onclick = () => digito(4);
+ document.querySelector('#botao5').onclick = () => digito(5);
+ document.querySelector('#botao6').onclick = () => digito(6);
+ document.querySelector('#botao7').onclick = () => digito(7);
+ document.querySelector('#botao8').onclick = () => digito(8);
+ document.querySelector('#botao9').onclick = () => digito(9);
+ document.querySelector('#botao-virgula').onclick = virgula;
+ document.querySelector('#botao-limpar').onclick =  limpa;
+ document.querySelector('#botao-adicao').onclick = () => operador('+');
+ document.querySelector('#botao-subtracao').onclick = () => operador('-');
+ document.querySelector('#botao-multiplicacao').onclick = () => operador('*');
+ document.querySelector('#botao-divisao').onclick = () => operador('/');
+ document.querySelector('#botao-porcentagem').onclick = () => operador('%');
+ document.querySelector('#botao-igual').onclick = calcula;
 }
 
-function valor_5() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '5';
-}
+let vValor = '';
+let ehNovoNumero = true;
+let valorAnterior = 0;
+let operacaoPendente = null;
 
-function valor_6() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '6';
-}
-
-function valor_7() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '7';
-}
-
-function valor_8() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '8';
-}
-
-function valor_9() {
-    document.getElementById('conta').value = document.getElementById('conta').value + '9';
-}
-
-function valor_adicao() {
-    if(parte1 == 0){
-        guarda_sinal = '+';
-        parte1 = parseInt(document.getElementById('conta').value);
-        document.getElementById('result').value = parte1;
-        document.getElementById('conta').value = ''
-    } else{ 
-        total += parte1 + parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        document.getElementById('conta').value = ''
-
+const atualizaVisor = () => {
+    let [parteInteira, parteDecimal] = vValor.split(',');
+    let v = '';
+    c=0;
+    for(let i = parteInteira.length -1; i >= 0; i--){
+        if(++c > 3){
+            v = '.' + v;
+            c = 1;
+        }
+        v = parteInteira[i] + v;
     }
-}
-function valor_subtracao() {
-    guarda_sinal = '-';
-    if(parte1 == 0){
-        parte1 = parseInt(document.getElementById('conta').value);
-        document.getElementById('result').value = parte1;
-        document.getElementById('conta').value = ''
-    } else{ 
-        total -= parte1 - parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        document.getElementById('conta').value = ''
+    v = v + (parteDecimal ? ',' + parteDecimal : '');
 
-    }
+    document.querySelector('#result').value = v;
 }
 
-
-function botao_multiplicacao(){
-    guarda_sinal = '*';
-    if(parte1 == 0){
-        parte1 = parseInt(document.getElementById('conta').value);
-        document.getElementById('result').value = parte1;
-        document.getElementById('conta').value = ''
-    } else{ 
-        total *= parte1 * parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        document.getElementById('conta').value = ''
-
+const digito = (n) => {
+    if(ehNovoNumero){
+        vValor = '' + n;
+        ehNovoNumero = false;
+    } else{ vValor += n;
     }
-}
-
-function botao_divisao(){
-    guarda_sinal = '/';
-    if(parte1 == 0){
-        parte1 = parseInt(document.getElementById('conta').value);
-        document.getElementById('result').value = parte1;
-        document.getElementById('conta').value = ''
-    } else{ 
-        total /= parte1 / parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        document.getElementById('conta').value = ''
-
-    }
-}
-
-function verificar(){
-    if( guarda_sinal == '+'){
-        total += parte1 + parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        guarda_sinal = '+';
-        document.getElementById('conta').value = 0;
-        parte1 = 0;
-    }
-    if( guarda_sinal == '-'){
-        total -= parte1 - parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        guarda_sinal = '-';
-        document.getElementById('conta').value = 0;
-        parte1 = 0;
-    }
-    if( guarda_sinal == '*'){
-        total *= parte1 + parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        guarda_sinal = '*';
-        document.getElementById('conta').value = 0;
-        parte1 = 0;
-    }
-    if( guarda_sinal == '*'){
-        total *= parte1 * parseInt(document.getElementById('conta').value) ;
-        document.getElementById('result').value = total;
-        guarda_sinal = '*';
-        document.getElementById('conta').value = 0;
-        parte1 = 0;
-    }
-}
-
-
-
-function limpar() {
+    atualizaVisor();
     
-    total = 0
-    document.getElementById('conta').value = 0;
-    document.getElementById('result').value = 0;
 }
 
+
+const virgula = () => {
+    if(ehNovoNumero){
+        vValor = '0,';
+        ehNovoNumero = false;
+    } else if(vValor.indexOf(',') == -1){
+        vValor += ',';
+    }
+    atualizaVisor();
+}
+
+const limpa = () => {
+    ehNovoNumero = true;
+    valorAnterior = 0;
+    vValor = '0';
+    operacaoPendente = null;
+    atualizaVisor()
+}
+
+const valorAtual = () => parseFloat(vValor.replace(',', '.'));
+
+const operador = (op) => {
+    calcula();
+    valorAnterior = valorAtual();
+    operacaoPendente = op;
+    ehNovoNumero = true;
+}
+
+
+const calcula = () => {
+    if(operacaoPendente != null){
+        let resultado;
+        switch(operacaoPendente){
+            case '+': 
+                resultado = valorAnterior + valorAtual(); 
+                break;
+            case '-': 
+                resultado = valorAnterior - valorAtual(); 
+                break;
+            case '*': 
+                resultado = valorAnterior * valorAtual(); 
+                break;
+            case '/':
+                resultado = valorAnterior / valorAtual(); 
+                break;
+                case '%':
+                    resultado = valorAtual() * (valorAnterior/100); 
+                    break;                
+        }
+        vValor = resultado.toString().replace('.', ',');
+    }
+    ehNovoNumero = true;
+    operacaoPendente = null;
+    valorAnterior = 0;
+    atualizaVisor();
+}
